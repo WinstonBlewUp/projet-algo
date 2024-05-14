@@ -1,0 +1,16 @@
+{
+    "name": "robinburnay/projet",
+    "description": "Projet d'algorihtmie",
+    "autoload": {
+        "psr-4": {
+            "Robinburnay\\Projet\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "WinstonBlewUp",
+            "email": "playlist.robin@gmail.com"
+        }
+    ],
+    "require": {}
+}
