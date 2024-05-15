@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Robinburnay\\Projet\\' => array($baseDir . '/src'),
+    'Bookstore\\' => array($baseDir . '/src/Bookstore'),
 );
