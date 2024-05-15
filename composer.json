@@ -3,7 +3,7 @@
     "description": "Projet d'algorihtmie",
     "autoload": {
         "psr-4": {
-            "Robinburnay\\Projet\\": "src/"
+            "Bookstore\\": "src/Bookstore/"
         }
     },
     "authors": [
