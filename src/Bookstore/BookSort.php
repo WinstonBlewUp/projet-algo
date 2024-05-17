@@ -43,3 +43,6 @@ class BookSort{
         return $result;
     }
 }
+
+
+// fonction de coparaison -> rm limites 
