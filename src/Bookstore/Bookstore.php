@@ -47,29 +47,19 @@ class BookStore {
         return false;
     }
 
-    public function displayBook($books, $id) {
-        foreach ($books as $book) {
-            if ($book['id'] === $id) {
-                echo "ID: " . $book['id'] . "\n";
-                echo "Name: " . $book['name'] . "\n";
-                echo "Description: " . $book['description'] . "\n";
-                echo "In Stock: " . ($book['inStock'] ? 'Yes' : 'No') . "\n";
-                return;
-            }
+    public function displayBook($book) {
+            echo "ID: " . $book['id'] . "\n";
+            echo "Name: " . $book['name'] . "\n";
+            echo "Description: " . $book['description'] . "\n";
+            echo "In Stock: " . ($book['inStock'] ? 'Yes' : 'No') . "\n\n";
         }
-        echo "Livre non trouvé.";
-    }
 
-    public function displayAllBooks($books) {
-        if (empty($books)) {
+    public function displayAllBooks() {
+        if (empty($this->books)) {
             echo "Aucun livre disponible. \n";
         } else {
-            foreach ($books as $book) {
-                echo "ID: " . $book['id'] . "\n";
-                echo "Name: " . $book['name'] . "\n";
-                echo "Description: " . $book['description'] . "\n";
-                echo "In Stock: " . ($book['inStock'] ? 'Yes' : 'No') . "\n";
-                echo "\n";
+            foreach ($this->books as $book) {
+                $this->displayBook($book);
             }
         }
     }

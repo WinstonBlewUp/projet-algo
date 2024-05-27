@@ -94,6 +94,26 @@ class MainMenu {
             echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
         }
     }
+
+    private function deleteBookInterface(){
+        //TODO
+    }
+
+    private function displayBookInterface(){
+        echo "Entrez l'id du livre à afficher : \n";
+        $id = trim(fgets(STDIN));
+        $book = $this->bookstore->getBook($id);
+        if ($book) {
+            $this->bookstore->displayBook($book);
+        }
+        else {
+            echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
+        }
+    }
+
+    private function displayAllBooksInterface(){
+        $this->bookstore->displayAllBooks();
+    }
 }
 
 $menu = new MainMenu();
