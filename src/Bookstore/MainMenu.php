@@ -1,23 +1,15 @@
 <?php
 
 namespace Bookstore;
-require_once('/Users/robinburnay/Desktop/ESGI-DIRECTORY/Cours-IW3/ALGO/projet/vendor/autoload.php');
 
-use Bookstore\BookFunctions;
-use Bookstore\BookSort;
-use Bookstore\BookDisplay;
-use Bookstore\BookStore;
+use Bookstore\Bookstore;
 
 class MainMenu {
 
-    private $BookFunctions;
-    private $BookSort;
-    private $BookDisplay;
+    private $bookstore;
 
     public function __construct() {
-        $this->bookFunctions = new BookFunctions();
-        $this->bookSort = new BookSort();
-        $this->bookDisplay = new BookDisplay();
+        $this->bookstore = new BookStore();
     }
 
     public function show(){
@@ -32,7 +24,7 @@ class MainMenu {
 
             $choice = trim(fgets(STDIN));
 
-            switch(choice){
+            switch($choice){
                 case '1': $this->addBookInterface();
                 break;
                 case '2': $this->updateBookInterface();
@@ -61,11 +53,45 @@ class MainMenu {
         $inStock = strtolower(trim(fgets(STDIN))) === 'oui';
 
         try{
-            $this-> bookFunctions->addBook($name, $desc, $inStock);
-            echo "Livre ajouté avec Succès \n";
+            $this->bookstore->addBook($name, $desc, $inStock);
+            echo "Livre ajouté avec succès \n";
         }
         catch (\Exception $e) {
             echo "Erreur lors de l'ajout du livre: " . $e->getMessage() . "\n";
+        }
+    }
+
+    private function updateBookInterface(){
+        echo "Entrez l'id du livre à modifier : \n";
+        $id = trim(fgets(STDIN));
+        $book = $this->bookstore->getBook($id);
+        if ($book) {
+            echo "Voulez vous modifier le livre \"".$book['name']."\" ? (Y/N)\n";
+            $check = trim(fgets(STDIN));
+            switch($check){
+                case 'Y':
+                    echo "Entrez le nom du livre : \n";
+                    $book['name'] = trim(fgets(STDIN));
+                    echo "Entrez une description : \n"; 
+                    $book['description'] = trim(fgets(STDIN));
+                    echo "Le livre est-il en stock ? \n";
+                    $book['inStock'] = strtolower(trim(fgets(STDIN))) === 'oui';
+                    try{
+                        $this->bookstore->updateBook($book);
+                        echo "Livre modifié avec succès \n";
+                    }
+                    catch (\Exception $e) {
+                        echo "Erreur lors de l'ajout du livre: " . $e->getMessage() . "\n";
+                    }
+                    break;
+                case 'N':
+                    break;
+                default:
+                    echo "dumbass";
+            }
+        }
+        else {
+            echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
         }
     }
 }
