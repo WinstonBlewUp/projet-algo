@@ -1,0 +1,14 @@
+{
+    "1": {
+        "id": 1,
+        "name": "2",
+        "description": "2",
+        "inStock": false
+    },
+    "0": {
+        "id": 0,
+        "name": "1",
+        "description": "1",
+        "inStock": false
+    }
+}

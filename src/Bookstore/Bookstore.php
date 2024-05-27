@@ -5,9 +5,20 @@ namespace Bookstore;
 class BookStore {
 
     private $books;
+    private $path = './data/storage.json';
 
     function __construct() {
-        $this->books = [];
+        $this->books = $this->readStorage();
+    }
+    private function readStorage() {
+        $jsonString = file_get_contents($this->path);
+        $jsonData = json_decode($jsonString, true);
+        return $jsonData;
+    }
+
+    private function updateStorage() {
+        $jsonString = json_encode($this->books, JSON_PRETTY_PRINT);
+        file_put_contents($this->path, $jsonString);
     }
 
     public function getBook($id){
@@ -23,17 +34,19 @@ class BookStore {
         static $id = 0;
 
         $book = [
-            "id" => ++$id,
+            "id" => $id++,
             "name" => $name,
             "description" => $desc,
             "inStock" => $inStock
         ];
 
-        $this->books[$id] = $book;
+        $this->books[$book['id']] = $book;
+        $this->updateStorage();
     }
 
     public function updateBook($updatedBook) {
         $this->books[$updatedBook['id']] = $updatedBook;
+        $this->updateStorage();
         return true;
     }
 
