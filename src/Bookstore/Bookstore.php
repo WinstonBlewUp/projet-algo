@@ -21,6 +21,12 @@ class BookStore {
         file_put_contents($this->path, $jsonString);
     }
 
+    private function getId() {
+        $i = 0;
+        while(isset($this->books[$i])) $i++;
+        return $i;
+    }
+
     public function getBook($id){
         if (array_key_exists($id, $this->books)){
             return $this->books[$id];
@@ -31,10 +37,9 @@ class BookStore {
     }
 
     public function addBook($name, $desc, $inStock){
-        static $id = 0;
 
         $book = [
-            "id" => $id++,
+            "id" => $this->getId(),
             "name" => $name,
             "description" => $desc,
             "inStock" => $inStock
