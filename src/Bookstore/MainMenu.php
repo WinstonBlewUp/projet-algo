@@ -66,6 +66,7 @@ class MainMenu {
         $id = trim(fgets(STDIN));
         $book = $this->bookstore->getBook($id);
         if ($book) {
+            while(true){
             echo "Voulez vous modifier le livre \"".$book['name']."\" ? (Y/N)\n";
             $check = trim(fgets(STDIN));
             switch($check){
@@ -83,12 +84,11 @@ class MainMenu {
                     catch (\Exception $e) {
                         echo "Erreur lors de l'ajout du livre: " . $e->getMessage() . "\n";
                     }
-                    break;
+                    break 2;
                 case 'N':
-                    break;
-                default:
-                    echo "dumbass";
+                    break 2;
             }
+        }
         }
         else {
             echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
