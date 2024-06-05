@@ -19,7 +19,8 @@ class MainMenu {
             echo "2. Modifier un livre \n";
             echo "3. Supprimer un livre \n";
             echo "4. Afficher un livre \n";
-            echo "5. Afficher tous les livres triés \n";
+            echo "5. Afficher tous les livres \n";
+            echo "6 Afficher tous les livres triés \n";
             echo "0. Quitter \n";
 
             $choice = trim(fgets(STDIN));
@@ -35,7 +36,8 @@ class MainMenu {
                 break;
                 case '5': $this->displayAllBooksInterface();
                 break;
-
+                case '6': $this->displayAllBooksSortedInterface();
+                break;
                 case '0':
                     exit("Merci d'avoir utilisé notre système.\n");
                 default:
@@ -96,8 +98,32 @@ class MainMenu {
     }
 
     private function deleteBookInterface(){
-        //TODO
+        echo "Entrez l'id du livre à supprimer : \n";
+        $id = trim(fgets(STDIN));
+        $book = $this->bookstore->getBook($id);
+        if ($book) {
+            while(true){
+            echo "Voulez vous supprimer le livre \"".$book['name']."\" ? (Y/N)\n";
+            $check = trim(fgets(STDIN));
+            switch($check){
+                case 'Y':
+                    try{
+                        $this->bookstore->deleteBook($id);
+                        echo "Livre supprimé avec succès \n";
+                    }
+                    catch (\Exception $e) {
+                        echo "Erreur lors de la suppression du livre: " . $e->getMessage() . "\n";
+                    }
+                    break 2;
+                case 'N':
+                    break 2;
+            }
+        }
     }
+    else {
+        echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
+    }
+}
 
     private function displayBookInterface(){
         echo "Entrez l'id du livre à afficher : \n";
@@ -113,6 +139,10 @@ class MainMenu {
 
     private function displayAllBooksInterface(){
         $this->bookstore->displayAllBooks();
+    }
+
+    private function displayAllBooksSortedInterface(){
+        //comprend pas le sorting donc voila
     }
 }
 

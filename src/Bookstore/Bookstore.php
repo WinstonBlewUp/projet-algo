@@ -31,13 +31,10 @@ class BookStore {
         if (array_key_exists($id, $this->books)){
             return $this->books[$id];
         }
-        else {
-            return False;
-        }
+        return False;
     }
 
     public function addBook($name, $desc, $inStock){
-
         $book = [
             "id" => $this->getId(),
             "name" => $name,
@@ -56,13 +53,9 @@ class BookStore {
     }
 
     public function deleteBook($books, $id) {
-        foreach ($books as $key => $book) {
-            if ($book['id'] === $id) {
-                unset($books[$key]);
-                return true;
-            }
-        }
-        return false;
+            unset($books[$id]);
+            $this->updateStorage();
+            return true;
     }
 
     public function displayBook($book) {
