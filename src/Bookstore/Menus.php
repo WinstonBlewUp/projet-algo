@@ -4,15 +4,16 @@ namespace Bookstore;
 
 use Bookstore\Bookstore;
 
-class MainMenu {
+class Menus {
 
     private $bookstore;
 
     public function __construct() {
         $this->bookstore = new BookStore();
+        $this->mainInterface();
     }
 
-    public function show(){
+    public function mainInterface(){
         while(true){
             echo " \n Menu Principal - Bookstore \n";
             echo "1. Ajouter un livre \n";
@@ -44,6 +45,7 @@ class MainMenu {
                     echo "Option invalide, veuillez réessayer.\n";
             }
         }
+        $this->mainInterface();
     }
 
     private function addBookInterface(){
@@ -61,6 +63,7 @@ class MainMenu {
         catch (\Exception $e) {
             echo "Erreur lors de l'ajout du livre: " . $e->getMessage() . "\n";
         }
+        $this->mainInterface();
     }
 
     private function updateBookInterface(){
@@ -95,6 +98,7 @@ class MainMenu {
         else {
             echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
         }
+        $this->mainInterface();
     }
 
     private function deleteBookInterface(){
@@ -123,6 +127,7 @@ class MainMenu {
     else {
         echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
     }
+    $this->mainInterface();
 }
 
     private function displayBookInterface(){
@@ -135,16 +140,16 @@ class MainMenu {
         else {
             echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
         }
+        $this->mainInterface();
     }
 
     private function displayAllBooksInterface(){
         $this->bookstore->displayAllBooks();
+        $this->mainInterface();
     }
 
     private function displayAllBooksSortedInterface(){
         //comprend pas le sorting donc voila
+        $this->mainInterface();
     }
 }
-
-$menu = new MainMenu();
-$menu->show();

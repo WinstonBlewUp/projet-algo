@@ -10,6 +10,7 @@ class BookStore {
     function __construct() {
         $this->books = $this->readStorage();
     }
+    
     private function readStorage() {
         $jsonString = file_get_contents($this->path);
         $jsonData = json_decode($jsonString, true);
