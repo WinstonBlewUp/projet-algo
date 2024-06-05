@@ -7,14 +7,15 @@ use Bookstore\Bookstore;
 class Menus {
 
     private $bookstore;
+    private $history;
 
     public function __construct() {
         $this->bookstore = new BookStore();
+        $this->history = new History();
         $this->mainInterface();
     }
 
     public function mainInterface(){
-        while(true){
             echo " \n Menu Principal - Bookstore \n";
             echo "1. Ajouter un livre \n";
             echo "2. Modifier un livre \n";
@@ -22,6 +23,8 @@ class Menus {
             echo "4. Afficher un livre \n";
             echo "5. Afficher tous les livres \n";
             echo "6 Afficher tous les livres triés \n";
+            echo "7 Recherche\n";
+            echo "8 Historique\n";
             echo "0. Quitter \n";
 
             $choice = trim(fgets(STDIN));
@@ -39,14 +42,16 @@ class Menus {
                 break;
                 case '6': $this->displayAllBooksSortedInterface();
                 break;
+                case '7': $this->searchInterface();
+                break;
+                case '8': $this->showHistory();
+                break;
                 case '0':
                     exit("Merci d'avoir utilisé notre système.\n");
                 default:
                     echo "Option invalide, veuillez réessayer.\n";
             }
         }
-        $this->mainInterface();
-    }
 
     private function addBookInterface(){
         echo "Entrez le nom du livre : \n";
@@ -59,6 +64,7 @@ class Menus {
         try{
             $this->bookstore->addBook($name, $desc, $inStock);
             echo "Livre ajouté avec succès \n";
+            $this->history->logCommand("ajout");
         }
         catch (\Exception $e) {
             echo "Erreur lors de l'ajout du livre: " . $e->getMessage() . "\n";
@@ -85,6 +91,7 @@ class Menus {
                     try{
                         $this->bookstore->updateBook($book);
                         echo "Livre modifié avec succès \n";
+                        $this->history->logCommand("modification");
                     }
                     catch (\Exception $e) {
                         echo "Erreur lors de l'ajout du livre: " . $e->getMessage() . "\n";
@@ -114,6 +121,7 @@ class Menus {
                     try{
                         $this->bookstore->deleteBook($id);
                         echo "Livre supprimé avec succès \n";
+                        $this->history->logCommand("suppression");
                     }
                     catch (\Exception $e) {
                         echo "Erreur lors de la suppression du livre: " . $e->getMessage() . "\n";
@@ -136,6 +144,7 @@ class Menus {
         $book = $this->bookstore->getBook($id);
         if ($book) {
             $this->bookstore->displayBook($book);
+            $this->history->logCommand("affichage");
         }
         else {
             echo "L'id : ".$id." ne correspond à aucun livre de notre stockage\n";
@@ -145,11 +154,24 @@ class Menus {
 
     private function displayAllBooksInterface(){
         $this->bookstore->displayAllBooks();
+        $this->history->logCommand("liste");
         $this->mainInterface();
     }
 
     private function displayAllBooksSortedInterface(){
         //comprend pas le sorting donc voila
+        $this->history->logCommand("tri");
+        $this->mainInterface();
+    }
+    
+    private function searchInterface(){
+        //TODO
+        $this->history->logCommand("recherche");
+        $this->mainInterface();
+    }
+
+    private function showHistory(){
+        $this->history->displayHistory();
         $this->mainInterface();
     }
 }
