@@ -4,7 +4,7 @@ namespace Bookstore;
 
 class BookSort{
 
-    function mergeSortBooks($books, $attribute) {
+    static function mergeSortBooks($books, $attribute) {
         if (count($books) <= 1) {
             return $books;
         }
@@ -13,13 +13,13 @@ class BookSort{
         $left = array_slice($books, 0, $mid);
         $right = array_slice($books, $mid);
 
-        $left = mergeSortBooks($left, $attribute);
-        $right = mergeSortBooks($right, $attribute);
+        $left = self::mergeSortBooks($left, $attribute);
+        $right = self::mergeSortBooks($right, $attribute);
 
-        return merge($left, $right, $attribute);
+        return self::merge($left, $right, $attribute);
     }
 
-    function merge($left, $right, $attribute) {
+    static function merge($left, $right, $attribute) {
         $result = [];
         $i = 0;
         $j = 0;

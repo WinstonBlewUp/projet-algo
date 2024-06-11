@@ -12,9 +12,12 @@ class BookStore {
     }
     
     private function readStorage() {
-        $jsonString = file_get_contents($this->path);
-        $jsonData = json_decode($jsonString, true);
-        return $jsonData;
+        if (file_exists($this->path)){
+            $jsonString = file_get_contents($this->path);
+            $jsonData = json_decode($jsonString, true);
+            return $jsonData;
+        }
+        return [];
     }
 
     private function updateStorage() {
@@ -53,8 +56,8 @@ class BookStore {
         return true;
     }
 
-    public function deleteBook($books, $id) {
-            unset($books[$id]);
+    public function deleteBook($id) {
+            unset($this->books[$id]);
             $this->updateStorage();
             return true;
     }
@@ -66,14 +69,22 @@ class BookStore {
             echo "In Stock: " . ($book['inStock'] ? 'Yes' : 'No') . "\n\n";
         }
 
-    public function displayAllBooks() {
-        if (empty($this->books)) {
+    public function displayAllBooks($sortedBooks) {
+        $booksToDisplay = $this->books;
+        if ($sortedBooks){
+            $booksToDisplay = $sortedBooks;
+        }
+        if (empty($booksToDisplay)) {
             echo "Aucun livre disponible. \n";
         } else {
-            foreach ($this->books as $book) {
+            foreach ($booksToDisplay as $book) {
                 $this->displayBook($book);
             }
         }
+    }
+    
+    public function sortBooksByAtribute($attribute){
+        return BookSort::mergeSortBooks($this->books, $attribute);
     }
 }
 

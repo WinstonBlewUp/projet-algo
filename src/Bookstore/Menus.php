@@ -152,14 +152,21 @@ class Menus {
         $this->mainInterface();
     }
 
-    private function displayAllBooksInterface(){
-        $this->bookstore->displayAllBooks();
+    private function displayAllBooksInterface($sortedBooks = NULL){
+        $this->bookstore->displayAllBooks($sortedBooks);
         $this->history->logCommand("liste");
         $this->mainInterface();
     }
 
     private function displayAllBooksSortedInterface(){
-        //comprend pas le sorting donc voila
+        $attribute = $this->selectAtribute();
+        if ($attribute === "id"){
+            $this->displayAllBooksInterface();
+        }
+        else{
+            $sortedBooks = $this->bookstore->sortBooksByAtribute($attribute);
+            $this->displayAllBooksInterface($sortedBooks);
+        }
         $this->history->logCommand("tri");
         $this->mainInterface();
     }
@@ -168,6 +175,24 @@ class Menus {
         //TODO
         $this->history->logCommand("recherche");
         $this->mainInterface();
+    }
+
+    private function selectAtribute(){
+        while(true){
+            echo "Selectionner un attribut :\n";
+            echo "1. ID \n";
+            echo "2. NOM \n";
+            echo "3. DESCRIPTION\n";
+            $attribute = trim(fgets(STDIN));
+            switch($attribute){
+                case '1':
+                    return "id";
+                case '2':
+                    return "name";
+                case '3':
+                    return "description";
+            }
+        }
     }
 
     private function showHistory(){
