@@ -2,50 +2,110 @@
 
 namespace Bookstore;
 
-echo ("\n" . "CHEMIN : " . __DIR__ . '/../../../vendor/autoload.php') . "\n \n";
-require_once(__DIR__ . '/../../../vendor/autoload.php');
+class BookStore {
 
+    private $books;
+    private $path = './data/storage.json';
 
-use Bookstore\BookFunctions;
-use Bookstore\BookSort;
-use Bookstore\BookDisplay;
+    function __construct() {
+        $this->books = $this->readStorage();
+    }
+    
+    private function readStorage() {
+        if (file_exists($this->path)){
+            $jsonString = file_get_contents($this->path);
+            $jsonData = json_decode($jsonString, true);
+            return $jsonData;
+        }
+        return [];
+    }
 
-$books = [];
+    private function updateStorage() {
+        $jsonString = json_encode($this->books, JSON_PRETTY_PRINT);
+        file_put_contents($this->path, $jsonString);
+    }
 
+    private function getId() {
+        $i = 0;
+        while(isset($this->books[$i])) $i++;
+        return $i;
+    }
 
+    public function getBookById($id){
+        if (array_key_exists($id, $this->books)){
+            return $this->books[$id];
+        }
+        return False;
+    }
 
-addBook($books, "1984", "Roman dystopique de George Orwell, illustrant une société totalitaire.", false);
-addBook($books, "Le Meilleur des mondes", "Roman d'anticipation de Aldous Huxley, dépeignant une société futuriste.", false);
-addBook($books, "Fahrenheit 451", "Roman de science-fiction de Ray Bradbury, centré sur la censure et la répression.", false);
-addBook($books, "Le Seigneur des Anneaux", "Épopée fantastique de J.R.R. Tolkien, un classique du genre fantasy.", false);
-addBook($books, "Le vieil homme et la mer", "Roman court d'Ernest Hemingway, récit d'une lutte entre un vieil homme et un grand marlin.", false);
-addBook($books, "Crime et Châtiment", "Roman psychologique de Fiodor Dostoïevski, explorant la morale et la rédemption.", false);
-addBook($books, "L'Étranger", "Roman existentialiste de Albert Camus, connu pour son exploration de l'absurdité de la vie.", false);
-addBook($books, "À la recherche du temps perdu", "Roman de Marcel Proust, une profonde réflexion sur le temps et la mémoire.", false);
-addBook($books, "Les Misérables", "Roman de Victor Hugo, qui critique la société française et explore la justice et la loi.", false);
-addBook($books, "Guerra e Paz", "Roman historique de Leo Tolstoï, qui raconte l'histoire de familles aristocratiques pendant les guerres napoléoniennes.", false);
-addBook($books, "La Ferme des animaux", "Fable politique de George Orwell, une satire du stalinisme.", false);
-addBook($books, "Moby Dick", "Roman d'aventure de Herman Melville, une quête obsessionnelle du grand cachalot blanc.", true);
-addBook($books, "Jane Eyre", "Roman de Charlotte Brontë, un mélange de critique sociale et de développement personnel.", false);
-addBook($books, "Orgueil et Préjugés", "Roman de Jane Austen, une critique mordante des attitudes sociales de l'époque.", false);
-/*addBook($books, "Gatsby le Magnifique", "Roman de F. Scott Fitzgerald, une peinture de l'Amérique des années 1920.", true;);*/
-addBook($books, "Les Frères Karamazov", "Roman de Fiodor Dostoïevski, une exploration de la foi, du doute et de la raison.", false);
-addBook($books, "Le Comte de Monte-Cristo", "Roman d'aventure d'Alexandre Dumas, une histoire de trahison et de revanche.", false);
-addBook($books, "Brave New World", "Roman de science-fiction d'Aldous Huxley, un aperçu d'un futur dystopique effrayant.", false);
-addBook($books, "La Divine Comédie", "Poème épique de Dante Alighieri, une allégorie du voyage de l'âme vers Dieu.", false);
-addBook($books, "Don Quichotte", "Roman de Miguel de Cervantes, une satire des romans de chevalerie traditionnels.", false);
+    public function getBooks($query, $attribute){
+        if ($attribute == "id"){
+            $foundBooks[] = $this->getBookById($query);
+        }
+        else{
+            $sortedBooks = $this->sortBooksByAtribute($attribute);
+            foreach ($sortedBooks as $book){
+                if (str_contains($book[$attribute], $query)){
+                    $foundBooks[] = $book;
+                }
+            }
+        }
+        if (empty($foundBooks)){
+            echo "Aucun livre ne correspond à votre recherche.\n";
+        }
+        else{
+           $this->displayAllBooks($foundBooks);
+        }
+    }
+    
 
+    public function addBook($name, $desc, $inStock){
+        $book = [
+            "id" => $this->getId(),
+            "name" => $name,
+            "description" => $desc,
+            "inStock" => $inStock
+        ];
 
+        $this->books[$book['id']] = $book;
+        $this->updateStorage();
+    }
 
+    public function updateBook($updatedBook) {
+        $this->books[$updatedBook['id']] = $updatedBook;
+        $this->updateStorage();
+        return true;
+    }
 
-updateBook($books, 2, "Le Livre", "C'est moi j'ai écris le livre c:", false);
+    public function deleteBook($id) {
+            unset($this->books[$id]);
+            $this->updateStorage();
+            return true;
+    }
 
+    public function displayBook($book) {
+            echo "ID: " . $book['id'] . "\n";
+            echo "Name: " . $book['name'] . "\n";
+            echo "Description: " . $book['description'] . "\n";
+            echo "In Stock: " . ($book['inStock'] ? 'Yes' : 'No') . "\n\n";
+        }
 
-
-deleteBook($books, 2);
-
-$sortedBooks = mergeSortBooks($books, 'id');
-
-displayBook($books, 1);
-displayAllBooks($sortedBooks);
+    public function displayAllBooks($sortedBooks) {
+        $booksToDisplay = $this->books;
+        if ($sortedBooks){
+            $booksToDisplay = $sortedBooks;
+        }
+        if (empty($booksToDisplay)) {
+            echo "Aucun livre disponible. \n";
+        } else {
+            foreach ($booksToDisplay as $book) {
+                $this->displayBook($book);
+            }
+        }
+    }
+    
+    public function sortBooksByAtribute($attribute){
+        return BookSort::mergeSortBooks($this->books, $attribute);
+    }
+}
 
