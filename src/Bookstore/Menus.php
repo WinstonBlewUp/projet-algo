@@ -75,7 +75,7 @@ class Menus {
     private function updateBookInterface(){
         echo "Entrez l'id du livre à modifier : \n";
         $id = trim(fgets(STDIN));
-        $book = $this->bookstore->getBook($id);
+        $book = $this->bookstore->getBookById($id);
         if ($book) {
             while(true){
             echo "Voulez vous modifier le livre \"".$book['name']."\" ? (Y/N)\n";
@@ -111,7 +111,7 @@ class Menus {
     private function deleteBookInterface(){
         echo "Entrez l'id du livre à supprimer : \n";
         $id = trim(fgets(STDIN));
-        $book = $this->bookstore->getBook($id);
+        $book = $this->bookstore->getBookById($id);
         if ($book) {
             while(true){
             echo "Voulez vous supprimer le livre \"".$book['name']."\" ? (Y/N)\n";
@@ -141,7 +141,7 @@ class Menus {
     private function displayBookInterface(){
         echo "Entrez l'id du livre à afficher : \n";
         $id = trim(fgets(STDIN));
-        $book = $this->bookstore->getBook($id);
+        $book = $this->bookstore->getBookById($id);
         if ($book) {
             $this->bookstore->displayBook($book);
             $this->history->logCommand("affichage");
@@ -159,20 +159,17 @@ class Menus {
     }
 
     private function displayAllBooksSortedInterface(){
-        $attribute = $this->selectAtribute();
-        if ($attribute === "id"){
-            $this->displayAllBooksInterface();
-        }
-        else{
-            $sortedBooks = $this->bookstore->sortBooksByAtribute($attribute);
-            $this->displayAllBooksInterface($sortedBooks);
-        }
+        $sortedBooks = $this->sortBooks();
         $this->history->logCommand("tri");
+        $this->displayAllBooksInterface($sortedBooks);
         $this->mainInterface();
     }
     
     private function searchInterface(){
-        //TODO
+        $attribute = $this->selectAtribute();
+        echo "Entrer les termes de votre recherche :\n";
+        $query = trim(fgets(STDIN));
+        $this->bookstore->getBooks($query, $attribute);
         $this->history->logCommand("recherche");
         $this->mainInterface();
     }
@@ -192,6 +189,18 @@ class Menus {
                 case '3':
                     return "description";
             }
+        }
+    }
+
+    private function sortBooks($attribute = NULL){
+        if ($attribute == NULL){
+            $attribute = $this->selectAtribute();
+        }
+        if ($attribute === "id"){
+            return NULL;
+        }
+        else{
+            return $this->bookstore->sortBooksByAtribute($attribute);
         }
     }
 

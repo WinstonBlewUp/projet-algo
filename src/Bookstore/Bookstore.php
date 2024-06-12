@@ -31,12 +31,33 @@ class BookStore {
         return $i;
     }
 
-    public function getBook($id){
+    public function getBookById($id){
         if (array_key_exists($id, $this->books)){
             return $this->books[$id];
         }
         return False;
     }
+
+    public function getBooks($query, $attribute){
+        if ($attribute == "id"){
+            $foundBooks[] = $this->getBookById($query);
+        }
+        else{
+            $sortedBooks = $this->sortBooksByAtribute($attribute);
+            foreach ($sortedBooks as $book){
+                if (str_contains($book[$attribute], $query)){
+                    $foundBooks[] = $book;
+                }
+            }
+        }
+        if (empty($foundBooks)){
+            echo "Aucun livre ne correspond à votre recherche.\n";
+        }
+        else{
+           $this->displayAllBooks($foundBooks);
+        }
+    }
+    
 
     public function addBook($name, $desc, $inStock){
         $book = [
